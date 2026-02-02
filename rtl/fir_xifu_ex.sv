@@ -16,14 +16,14 @@
 
 module fir_xifu_ex
   import cv32e40x_pkg::*;
-  import fir_xifu_pkg::*; 
+  import fir_xifu_pkg::*;
 (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic clear_i,
 
   cv32e40x_if_xif.coproc_mem    xif_mem_o,
-  
+
   input  id2ex_t   id2ex_i,
   output ex2wb_t   ex2wb_o,
 
@@ -45,17 +45,12 @@ module fir_xifu_ex
   // Compute addresses: this is used for load/store operations, which
   // need to compute the base+offset (with sign extension for the latter)
   // and also the updated address using postincrement.
-  logic [31:0] next_addr, curr_addr; 
+  logic [31:0] next_addr, curr_addr;
   assign curr_addr = ~forwarding ? id2ex_i.base : wb_fwd_i.result;
   assign next_addr = curr_addr; // placeholder: what should be added to this to calculate the real next_addr
                                 // i.e., this should be used to implement the address auto-increment
                                 // be careful about sign-extensions!
 
-  // Define right-shift amount for stores
-  logic [4:0] right_shift;
-  assign right_shift = '0; // placeholder: where is the right-shift taken from when it is used? think of
-                           // which instruction bits are relevant
-  
   // Issue memory transaction (load or store): currently this is issued
   // immediately for loads and only if a commit signal has arrived for
   // stores (typically in the same EX cycle, at least for CV32E40X).
@@ -113,7 +108,7 @@ module fir_xifu_ex
   //               the sign-extensions will NOT be performed. The simplest solution is to use
   //               a neutral element to force sign-extension:
   //                   assign long = 64'sh0 + short_a + short_b
-  assign dotp_prod[0] = '0; // placeholder: sum the LSB products from rs1, rs2 
+  assign dotp_prod[0] = '0; // placeholder: sum the LSB products from rs1, rs2
   assign dotp_prod[1] = '0; // placeholder: sum the MSB products from rs1, rs2
   assign dotp_result = '0; // placeholder: sum the products and the incoming accumulator value from rd
 
